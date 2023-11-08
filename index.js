@@ -26,7 +26,10 @@ app.use(cors());
 
 mongoose
   .connect(process.env.MONGO_URL)
-  .then((res) => console.log("Database connected!"))
+  .then((res) => {
+    console.log(`Database server connected at port: ${res.connection.port}`);
+    console.log(`Database server connected at host: ${res.connection.host}`);
+  })
   .catch((err) => console.log("database err ", err));
 
 const port = process.env.PORT || 5000;
