@@ -3,6 +3,7 @@ const Vehicle = require("../models/Vehicles");
 exports.addVehicle = async (req, res, next) => {
   // extracting all necessary info from body
   // const { brand, model, year, license, image, type } = req.body;
+  const { license } = req.body;
   console.log("add vehicle", req.body)
   try {
     const newVehicle = new Vehicle({
