@@ -2,13 +2,15 @@ const User = require("../models/Users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const catchAsyncError = require('../util/catchAsyncError');
+const { s3Uploadv2 } = require("../util/s3");
 
+
+const { TWILIO_SID, TWILIO_TOKEN } = process.env;
+console.log({ TWILIO_SID, TWILIO_TOKEN })
 const client = require("twilio")(
-  process.env.TWILIO_SID,
-  process.env.TWILIO_TOKEN,
-  {
-    lazyLoading: true,
-  }
+  TWILIO_SID,
+  TWILIO_TOKEN,
+  { lazyLoading: true }
 );
 
 exports.register = catchAsyncError(async (req, res, next) => {
@@ -284,20 +286,30 @@ exports.verifyMobileFrgPwd = async (req, res, next) => {
 };
 
 exports.updateProfile = async (req, res, next) => {
-  // extracting info for updating a user
-  const { firstname, lastname, profilePic, mobile, email, role } = req.body;
+  const newUserDetails = {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname
+  };
 
+  if (req.file) {
+    const results = await s3Uploadv2(req.file);
+    const location = results.Location && results.Location;
+    if (location) newUserDetails.profilePic = location;
+  }
+
+  console.log({ newUserDetails })
   try {
     const updatedUser = await User.findByIdAndUpdate(
       req.userId,
-      {
-        firstname,
-        lastname,
-        profilePic,
-        mobile,
-        email,
-        role,
-      },
+      newUserDetails,
+      // {
+      //   firstname,
+      //   lastname,
+      //   profilePic,
+      //   // mobile,
+      //   // email,
+      //   // role,
+      // },
       { new: true }
     );
 
@@ -546,6 +558,10 @@ exports.deleteUser = async (req, res, next) => {
 };
 
 exports.updateUser = async (req, res, next) => {
+  // const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+  //   runValidators: false,
+  //   new: true
+  // })
   const { firstname, lastname, city, role } = req.body;
 
   try {

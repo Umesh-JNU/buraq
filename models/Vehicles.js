@@ -30,6 +30,18 @@ const vehicleSchema = new Schema(
       type: String,
       required: true,
     },
+    reg_num: {
+      type: String,
+      required: true,
+    },
+    insurance_id: {
+      type: String,
+      required: true,
+    },
+    vignette_id: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );

@@ -3,6 +3,20 @@ const ErrorHandler = require("../util/errorHandler");
 module.exports = (err, req, res, next) => {
   err.message = err.message || "Internal Server Error";
 
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      err = new ErrorHandler("File size is too large", 400);
+    }
+
+    if (err.code === "LIMIT_FILE_COUNT") {
+      err = new ErrorHandler("File limit reached", 400);
+    }
+
+    if (err.code === "LIMIT_UNEXPECTED_FILE") {
+      err = new ErrorHandler("File must be an image", 400);
+    }
+  }
+  
   if (err.name === "CastError") {
     const msg = `Resource not found. Invalid: ${err.path}`;
     err = new ErrorHandler(msg, 400);

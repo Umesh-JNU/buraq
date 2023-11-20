@@ -1,4 +1,5 @@
 const express = require("express");
+const { upload } = require("../util/s3");
 
 const {
   register,
@@ -38,7 +39,7 @@ router.post("/verify-otp-forget", verifyMobileFrgPwd);
 router.post("/verify-otp-signup", verifyMobileNumberDriver);
 
 // for updating user profile
-router.put("/update-profile", auth, updateProfile);
+router.put("/update-profile", auth, upload.single('profilePic'), updateProfile);
 
 // for updating user docs
 router.put("/update-document", auth, updateDocuments);
