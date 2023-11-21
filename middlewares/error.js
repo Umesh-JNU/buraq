@@ -1,3 +1,4 @@
+const multer = require("multer");
 const ErrorHandler = require("../util/errorHandler");
 
 module.exports = (err, req, res, next) => {
