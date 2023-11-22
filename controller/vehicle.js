@@ -69,12 +69,12 @@ exports.getAllVehicle = async (req, res, next) => {
 
 exports.updateVehicle = async (req, res, next) => {
   // updating a single vehicle with the info changed
-  const { brand, model, year } = req.body;
+  const { brand, model, year, reg_num, insurance_id, vignette_id } = req.body;
 
   try {
     const vehicle = await Vehicle.findByIdAndUpdate(
       req.params.id,
-      { brand, model, year },
+      { brand, model, year, reg_num, insurance_id, vignette_id },
       { new: true }
     );
 
